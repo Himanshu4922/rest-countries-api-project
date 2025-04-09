@@ -1,0 +1,13 @@
+.linktag {
+  display: inline-block;
+  color: var(--text-color);
+  font-weight: 300;
+  font-size: 14px;
+  box-shadow: var(--box-shadow-color);
+  border-radius: 4px;
+  padding: 8px 16px;
+  margin-right: 12px;
+  margin-top: 12px;
+  cursor: pointer;
+  text-decoration: none;
+}

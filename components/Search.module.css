@@ -1,0 +1,25 @@
+.input-container {
+  box-shadow: var(--box-shadow-color);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  height: 56px;
+  border-radius: 4px;
+  background-color: var(--elements-color);
+  color: var(--text-color);
+}
+.input-container i {
+  color: var(--text-color);
+  flex-shrink: 0;
+  align-self: center;
+  margin-left: 12px;
+}
+input {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  width: 100%;
+  margin-left: 12px;
+  font-size: 14px;
+  color: inherit;
+}
