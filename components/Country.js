@@ -39,6 +39,9 @@ function Country() {
           `https://restcountries.com/v3.1/name/${countryName.country}?fullText=true`
         )
           .then(function (response) {
+            if(!response.ok){
+              throw new Error("Network Error")
+            }
             return response.json();
           })
           .then(function ([country]) {
