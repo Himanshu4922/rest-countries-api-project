@@ -39,6 +39,9 @@ function Home() {
     function () {
       fetch("https://restcountries.com/v3.1/all")
         .then(function (resp) {
+          if (!resp.ok) {
+            throw new Error("Network response was not ok");
+          }
           return resp.json();
         })
         .then(function (data) {
@@ -61,7 +64,7 @@ function Home() {
         .catch(function (error) {
           console.log("Error in fetching data", error);
           setLoading(false);
-          // navigate("/")
+          // navigate("/CustomError")
         });
     },
     [inputText]
