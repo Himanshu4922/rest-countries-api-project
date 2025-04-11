@@ -6,8 +6,6 @@ import Search from "./Search";
 import Dropdown from "./Dropdown";
 import { Link, useOutletContext, useNavigate } from "react-router";
 import CountriesShimmer from "./CountriesShimmer";
-// import { ThemeContext } from "./../contexts/ThemeContext";
-import { useWindowSize } from "./../hooks/useWindowSize";
 import { useThemeContext } from "./../hooks/useThemeContext";
 
 function Home() {
@@ -16,29 +14,22 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [filterRegion, setFilterRegion] = useState("");
   const [allCountries, setAllCountries] = useState([]);
+  const [error, setError] = useState(false);
+  const [retryTrigger, setRetryTrigger] = useState(false);
 
-  const navigate = useNavigate();
-  console.log(filterRegion);
-  // const isDark = useOutletContext();
-
-  // console.log(isDark)
-  // console.log(useOutletContext);
   function handleCountriesData(input) {
     setInputText(input);
   }
 
-  console.log(inputText, "from home");
-  // const windowSize = useWindowSize();
-  // console.log(ThemeContext)
-
-  // const [isDark, setIsDark] = useContext(ThemeContext);
   const [isDark, setIsDark] = useThemeContext();
-  // console.log(a);
 
   useEffect(
     function () {
       fetch("https://restcountries.com/v3.1/all")
         .then(function (resp) {
+          if (!resp.ok) {
+            throw new Error("Network error");
+          }
           return resp.json();
         })
         .then(function (data) {
@@ -55,21 +46,19 @@ function Home() {
           setAllCountries(data);
 
           setLoading(false);
-          // console.log("running");
           window.scrollTo(0, 0);
         })
         .catch(function (error) {
           console.log("Error in fetching data", error);
           setLoading(false);
-          // navigate("/")
+          setError(true);
         });
     },
-    [inputText]
+    [inputText, retryTrigger]
   );
 
   useEffect(
     function () {
-      console.log("heehe");
       setCountries(
         allCountries.filter(function (country) {
           console.log("country");
@@ -85,7 +74,7 @@ function Home() {
   if (loading) {
     return (
       <>
-        <main>
+        <main className={styles["home-main"]}>
           <div className={styles["search-field"]}>
             <Search handleCountriesData={handleCountriesData} />
             <Dropdown />
@@ -98,21 +87,48 @@ function Home() {
       </>
     );
   }
+  console.log("rendering");
+
+  if (error) {
+    return (
+      <main className={styles["home-main"]}>
+        <div className={styles["search-field"]}>
+          <Search handleCountriesData={handleCountriesData} />
+          <Dropdown />
+        </div>
+
+        <div className={styles["countries-container"]}>
+          <div className={styles["error-box"]}>
+            <h2 className={styles["error-title"]}>
+              Oops! Something went wrong.
+            </h2>
+            <p className={styles["error-message"]}>
+              We couldn’t load the country data. Please check your connection or
+              try again later.
+            </p>
+            <button
+              className={styles["retry-button"]}
+              onClick={() => {
+                setRetryTrigger((prev) => !prev);
+                setError(false);
+              }}
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <>
-      <main>
+      <main className={styles["home-main"]}>
         <div className={styles["search-field"]}>
           <Search handleCountriesData={handleCountriesData} />
           <Dropdown setFilterRegion={setFilterRegion} inputText={inputText} />
         </div>
-        <div
-          className={
-            countries.length === 0
-              ? styles["countries-container-empty"]
-              : styles["countries-container"]
-          }
-        >
+        <div className={styles["countries-container"]}>
           {countries.map(function (country) {
             return (
               <Card

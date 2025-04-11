@@ -22,3 +22,16 @@ header .logo {
 .mode-type i {
   margin-right: 8px;
 }
+@media (max-width: 768px) {
+  header .logo {
+    font-size: 20px;
+    font-weight: 800;
+  }
+  .mode-type span {
+    font-size: 14px;
+  }
+  .mode-type i {
+    font-size: 12px;
+    vertical-align: middle;
+  }
+}

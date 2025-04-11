@@ -2,31 +2,20 @@ import React from "react";
 import { useState, useContext } from "react";
 import { useEffect } from "react";
 import styles from "./Country.module.css";
-import {
-  useParams,
-  useLocation,
-  useOutletContext,
-  useNavigate,
-} from "react-router";
+import { useParams, useLocation, useNavigate } from "react-router";
 import Border from "./Border";
 import CountryShimmer from "./CountryShimmer";
-// import { ThemeContext } from "./../contexts/ThemeContext";
 import { useThemeContext } from "./../hooks/useThemeContext";
 
 function Country() {
   const [countryData, setCountryData] = useState(null);
   const [loading, setLoading] = useState(true);
-  // const searchParams = new URLSearchParams(window.location.search);
-  // const countryName = searchParams.get("name");
   const countryName = useParams();
-  // const isDark = useOutletContext();
-
-  const navigate = useNavigate();
-
   const location = useLocation();
-  // console.log(location);
-  // const [isDark, setIsDark] = useContext(ThemeContext);
   const [isDark, setIsDark] = useThemeContext();
+  const navigate = useNavigate();
+  const [error, setError] = useState(false);
+  const [retryTrigger, setRetryTrigger] = useState(false);
 
   useEffect(
     function () {
@@ -39,8 +28,8 @@ function Country() {
           `https://restcountries.com/v3.1/name/${countryName.country}?fullText=true`
         )
           .then(function (response) {
-            if(!response.ok){
-              throw new Error("Network Error")
+            if (!response.ok) {
+              throw new Error("Network Error");
             }
             return response.json();
           })
@@ -50,19 +39,18 @@ function Country() {
           })
           .catch(function (error) {
             setLoading(false);
-            console.log(Error);
-            navigate("/");
+            setError(true);
           });
         window.scrollTo(0, 0);
       }
     },
-    [countryName.country, location.state]
+    [countryName.country, location.state, retryTrigger]
   );
 
   if (loading) {
     return (
       <>
-        <main className={`${isDark ? "dark" : ""}`}>
+        <main>
           <div className={styles["details-and-btn-container"]}>
             <p className={styles["back-btn"]} onClick={() => history.back()}>
               <i className="fa-solid fa-arrow-left-long"></i>Back
@@ -76,19 +64,56 @@ function Country() {
     );
   }
 
-  return (
-    countryData && (
+  if (error) {
+    return (
       <>
-        <main className={`${isDark ? "dark" : ""}`}>
+        <main>
           <div className={styles["details-and-btn-container"]}>
             <p className={styles["back-btn"]} onClick={() => history.back()}>
               <i className="fa-solid fa-arrow-left-long"></i>Back
             </p>
             <div className={styles["details-and-img-container"]}>
-              <img
-                src={countryData.flags?.svg}
-                alt={countryData.name?.common}
-              />
+              <div className={styles["error-box"]}>
+                <h2 className={styles["error-title"]}>
+                  Oops! Something went wrong.
+                </h2>
+                <p className={styles["error-message"]}>
+                  We couldn’t load the country data. Please check your
+                  connection or try again later.
+                </p>
+                <button
+                  className={styles["retry-button"]}
+                  onClick={() => {
+                    setRetryTrigger((prev) => !prev);
+                    setError(false);
+                  }}
+                >
+                  Retry
+                </button>
+                <button>Go to Home</button>
+              </div>
+            </div>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  return (
+    countryData && (
+      <>
+        <main>
+          <div className={styles["details-and-btn-container"]}>
+            <p className={styles["back-btn"]} onClick={() => history.back()}>
+              <i className="fa-solid fa-arrow-left-long"></i>Back
+            </p>
+            <div className={styles["details-and-img-container"]}>
+              <div className={styles["flag-container"]}>
+                <img
+                  src={countryData.flags?.svg}
+                  alt={countryData.name?.common}
+                />
+              </div>
               <div className={styles["details"]}>
                 <h2>{countryData.name?.common}</h2>
                 <div className={styles["normal-details"]}>

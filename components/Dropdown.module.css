@@ -34,3 +34,28 @@
 .dropdown-menu-open li:hover {
   color: grey;
 }
+@media (max-width: 768px) {
+  .dropdown-container {
+    align-items: center;
+    margin-top: 12px;
+    padding: 14px 20px;
+    font-size: 14px;
+    align-self: flex-start;
+  }
+  .dropdown-container i {
+    margin-left: 8px;
+    font-size: 10px;
+  }
+}
+@media (max-width: 768px) {
+  .countries-container {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+}
+@media (max-width: 500px) {
+  .countries-container {
+    grid-template-columns: 1fr;
+  }
+}

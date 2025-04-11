@@ -5,9 +5,7 @@ import { ThemeContext } from "./../contexts/ThemeContext";
 
 function Header() {
   const [isDark, setIsDark] = useContext(ThemeContext);
-  // console.log(useContext(ThemeContext));
-  // console.log(isDark);
-  // console.log(setIsDark);
+
 
   function handleThemeChange() {
     setIsDark(!isDark);
